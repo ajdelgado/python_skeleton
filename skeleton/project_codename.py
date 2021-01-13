@@ -2,8 +2,8 @@
 # -*- encoding: utf-8 -*-
 #
 # This script is licensed under GNU GPL version 2.0 or above
-# (c) %authoring_date% %author%
-# %description%
+# (c) __authoring_date__ __author__
+# __description__
 
 import sys
 import os
@@ -12,7 +12,7 @@ import click
 import click_config_file
 from logging.handlers import SysLogHandler
 
-class %project_codename%:
+class __project_codename__:
 
     def _init_(self, debug_level, log_file):
         ''' Initial function called when object is created '''
@@ -22,7 +22,7 @@ class %project_codename%:
 
     def _init_log(self):
         ''' Initialize log object '''
-        self._log = logging.getLogger("%project_codename%")
+        self._log = logging.getLogger("__project_codename__")
         self._log.setLevel(logging.DEBUG)
 
         sysloghandler = SysLogHandler()
@@ -38,14 +38,14 @@ class %project_codename%:
         else:
             home_folder = os.environ.get('HOME', os.environ.get('USERPROFILE', ''))
             log_folder = os.path.join(home_folder, "log")
-            log_file = os.path.join(log_folder, "%project_codename%.log")
+            log_file = os.path.join(log_folder, "__project_codename__.log")
 
         if not os.path.exists(os.path.dirname(log_file)):
             os.path.mkdir(os.path.dirname(log_file))
 
         filehandler = logging.handlers.RotatingFileHandler(log_file, maxBytes=102400000)
         # create formatter
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        formatter = logging.Formatter('__(asctime)s - __(name)s - __(levelname)s - __(message)s')
         filehandler.setFormatter(formatter)
         filehandler.setLevel(logging.DEBUG)
         self._log.addHandler(filehandler)
@@ -61,8 +61,8 @@ class %project_codename%:
 #@click.option("--dummy","-n" is_flag=True, help="Don't do anything, just show what would be done.") # Don't forget to add dummy to parameters of main function
 @click_config_file.configuration_option()
 def main(debug_level, log_file):
-    object = %project_codename%(debug_level, log_file)
-    object._log.info('Initialized %project_codename%')
+    object = __project_codename__(debug_level, log_file)
+    object._log.info('Initialized __project_codename__')
 
 if __name__ == "__main__":
     main()

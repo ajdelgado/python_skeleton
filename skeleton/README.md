@@ -1,4 +1,4 @@
-# %project_codename%
+# __project_codename__
 
 ## Requirements
 
@@ -14,4 +14,4 @@
 
 ## Usage
 
-  `%project_codename%.py [--debug-level|-d CRITICAL|ERROR|WARNING|INFO|DEBUG|NOTSET] # Other parameters`
+  `__project_codename__.py [--debug-level|-d CRITICAL|ERROR|WARNING|INFO|DEBUG|NOTSET] # Other parameters`
