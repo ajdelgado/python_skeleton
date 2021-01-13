@@ -1,0 +1,6 @@
+author="Antonio J. Delgado"
+authoring_date=$(date +%Y)
+project_name="Project Name"
+project_codename="project-codename"
+version=0.0.1
+deployment_path="${HOME}/repos/"
