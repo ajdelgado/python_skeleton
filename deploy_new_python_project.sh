@@ -1,11 +1,15 @@
 #!/bin/bash
--e defaults && . defaults
+# shellcheck disable=SC1090
+if [ -e defaults ]
+then
+  . "$(dirname "${0}")/defaults"
+fi
 while [ $# -gt 0 ]
 do
   case "$1" in
     "--author")
       shift
-      DESTINATION="${1}"
+      author="${1}"
       shift
       ;;
     "--authoring-date")
@@ -32,10 +36,23 @@ do
       deployment_path="${1}"
       shift
       ;;
-      
     *)
       echo "Ignoring unknwon parameter '${1}'"
       shift
       ;;
   esac
 done
+
+destination_path="${deployment_path}/${project_codename}"
+mkdir "${destination_path}"
+script_path=$(dirname "${0}")
+cp "${script_path}/skeleton" "${destination_path}" -rfp
+mv "${destination_path}/project_codename.py" "${destination_path}/${project_codename}.py"
+while read -r file
+do
+    sed -i "s/%project_codename%/${project_codename}/g" "${file}"
+    sed -i "s/%author%/${author}/g" "${file}"
+    sed -i "s/%authoring_date%/${authoring_date}/g" "${file}"
+    sed -i "s/%project_name%/${project_name}/g" "${file}"
+    sed -i "s/%version%/${version}/g" "${file}"
+done <<< "$(ls "${destination_path}/")"
