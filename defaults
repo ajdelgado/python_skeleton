@@ -7,3 +7,6 @@ export PROJECT_CODENAME="project-codename"
 export VERSION=0.0.1
 export DEPLOYMENT_PATH="${HOME}/repos/"
 export DESCRIPTION=""
+export AUTHOR_EMAIL=""
+export URL=""
+export LICENSE="GPLv2"
