@@ -18,6 +18,9 @@ class __project_codename__:
         ''' Initial function called when object is created '''
         self.config = dict()
         self.config['debug_level'] = debug_level
+        if log_file is None:
+            log_file = os.path.join(os.environ.get('HOME', os.environ.get('USERPROFILE', os.getcwd())), 'log', '__project_codename__.log')
+        self.config['log_file'] = log_file
         self._init_log()
 
     def _init_log(self):
@@ -45,7 +48,7 @@ class __project_codename__:
 
         filehandler = logging.handlers.RotatingFileHandler(log_file, maxBytes=102400000)
         # create formatter
-        formatter = logging.Formatter('__(asctime)s - __(name)s - __(levelname)s - __(message)s')
+        formatter = logging.Formatter('%(asctime)s %(name)-12s %(levelname)-8s %(message)s')
         filehandler.setFormatter(formatter)
         filehandler.setLevel(logging.DEBUG)
         self._log.addHandler(filehandler)
