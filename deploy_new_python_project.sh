@@ -86,7 +86,8 @@ destination_path="${DEPLOYMENT_PATH}/${PROJECT_CODENAME}"
 mkdir -p "${DEPLOYMENT_PATH}"
 script_path=$(dirname "${0}")
 cp "${script_path}/skeleton" "${destination_path}" -rfp
-mv "${destination_path}/project_codename.py" "${destination_path}/${PROJECT_CODENAME}.py"
+mv "${destination_path}/project_codename" "${destination_path}/${PROJECT_CODENAME}"
+mv "${destination_path}/${PROJECT_CODENAME}/project_codename.py" "${destination_path}/${PROJECT_CODENAME}/${PROJECT_CODENAME}.py"
 while read -r file
 do
   sed -i "s/__project_codename__/${PROJECT_CODENAME}/g" "${file}"

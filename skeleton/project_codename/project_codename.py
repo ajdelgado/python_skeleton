@@ -14,7 +14,7 @@ from logging.handlers import SysLogHandler
 
 class __project_codename__:
 
-    def _init_(self, debug_level, log_file):
+    def __init__(self, debug_level, log_file):
         ''' Initial function called when object is created '''
         self.config = dict()
         self.config['debug_level'] = debug_level
@@ -44,7 +44,7 @@ class __project_codename__:
             log_file = os.path.join(log_folder, "__project_codename__.log")
 
         if not os.path.exists(os.path.dirname(log_file)):
-            os.path.mkdir(os.path.dirname(log_file))
+            os.mkdir(os.path.dirname(log_file))
 
         filehandler = logging.handlers.RotatingFileHandler(log_file, maxBytes=102400000)
         # create formatter
