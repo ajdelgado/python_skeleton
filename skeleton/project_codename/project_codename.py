@@ -64,8 +64,7 @@ class __project_codename__:
 #@click.option("--dummy","-n" is_flag=True, help="Don't do anything, just show what would be done.") # Don't forget to add dummy to parameters of main function
 @click_config_file.configuration_option()
 def __main__(debug_level, log_file):
-    object = __project_codename__(debug_level, log_file)
-    object._log.info('Initialized __project_codename__')
+    return __project_codename__(debug_level, log_file)
 
 if __name__ == "__main__":
     __main__()

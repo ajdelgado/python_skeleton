@@ -1,3 +1,25 @@
 [build-system]
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[project.urls]
+Homepage = "__url__"
+
+[project]
+name = "__project_codename__"
+version = "__version__"
+description = "__description__"
+readme = "README.md"
+authors = [{ name = "__author__", email = "__author_email__" }]
+license = { file = "LICENSE" }
+classifiers = [
+    "License :: OSI Approved :: __license__ License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+]
+#keywords = ["vCard", "contacts", "duplicates"]
+dependencies = [
+    "click",
+    "click_config_file",
+]
+requires-python = ">=3"
