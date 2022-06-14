@@ -24,7 +24,7 @@ function usage() {
 # shellcheck disable=SC1090
 if [ -e "$(dirname "${0}")/defaults" ]
 then
-  . "$(dirname "${0}")/defaults"
+  source "$(dirname "${0}")/defaults"
 fi
 while [ $# -gt 0 ]
 do
@@ -80,7 +80,7 @@ do
       ;;
     "--license-url"|"-U")
       shift
-      license_url="${1}"
+      LICENSE_URL="${1}"
       shift
       ;;
     "--description")
@@ -102,13 +102,13 @@ destination_path="${DEPLOYMENT_PATH}/${PROJECT_CODENAME}"
 mkdir -p "${DEPLOYMENT_PATH}"
 script_path=$(dirname "${0}")
 cp "${script_path}/skeleton" "${destination_path}" -rfp
-if [ -z "${license_url}" ]; then
+if [ -z "${LICENSE_URL}" ]; then
   case "${license}" in
     "GPLv3")
-      license_url="https://www.gnu.org/licenses/gpl-3.0.txt"
+      LICENSE_URL="https://www.gnu.org/licenses/gpl-3.0.txt"
       ;;
     "GPLv2")
-      license_url="https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt"
+      LICENSE_URL="https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt"
       ;;
     "GPLv1"|"GPL")
       licence_url="https://www.gnu.org/licenses/old-licenses/gpl-1.0.txt"
@@ -119,7 +119,7 @@ if [ -z "${license_url}" ]; then
   esac
 fi
 if [ -n "${licence_url}" ]; then
-  curl -s "${license_url}" > "${destination_path}/LICENSE"
+  curl -s "${LICENSE_URL}" > "${destination_path}/LICENSE"
 fi
 mv "${destination_path}/project_codename" "${destination_path}/${PROJECT_CODENAME}"
 mv "${destination_path}/${PROJECT_CODENAME}/project_codename.py" "${destination_path}/${PROJECT_CODENAME}/${PROJECT_CODENAME}.py"
