@@ -94,7 +94,7 @@ do
       ;;
   esac
 done
-if [ -z ${DESCRIPTION} ]; then
+if [ -z "${DESCRIPTION}" ]; then
   DESCRIPTION=${PROJECT_NAME}
 fi
 
