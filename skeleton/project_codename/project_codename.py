@@ -61,7 +61,7 @@ class __project_codename__:
         case_sensitive=False,
     ), help='Set the debug level for the standard output.')
 @click.option('--log-file', '-l', help="File to store all debug messages.")
-#@click.option("--dummy","-n" is_flag=True, help="Don't do anything, just show what would be done.") # Don't forget to add dummy to parameters of main function
+#@click.option("--dummy","-n", is_flag=True, help="Don't do anything, just show what would be done.") # Don't forget to add dummy to parameters of main function
 @click_config_file.configuration_option()
 def __main__(debug_level, log_file, **kwargs):
     return __project_codename__(debug_level, log_file, **kwargs)
