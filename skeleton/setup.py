@@ -1,3 +1,7 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""Setup script"""
+
 import setuptools
 setuptools.setup(
     scripts=['__project_codename__/__project_codename__.py'],
@@ -10,5 +14,5 @@ setuptools.setup(
     long_description="README.md",
     long_description_content_type="text/markdown",
     license="__license__",
-    #keywords=["my", "script", "does", "things"]
+    # keywords=["my", "script", "does", "things"]
 )
