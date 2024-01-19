@@ -51,6 +51,7 @@ do
     "--project-codename"|"-p")
       shift
       PROJECT_CODENAME="${1//-/_}"
+      PROJECT_CODENAME_CAMEL=$(echo "${PROJECT_CODENAME}" | sed -E 's/_([a-z])/\U\1/g')
       shift
       ;;
     "--version"|"-v")
@@ -126,6 +127,7 @@ mv "${destination_path}/${PROJECT_CODENAME}/project_codename.py" "${destination_
 while read -r file
 do
   sed -i "s/__project_codename__/${PROJECT_CODENAME}/g" "${file}"
+  sed -i "s/__project_codename_camel__/${PROJECT_CODENAME_CAMEL}/g" "${file}"
   sed -i "s/__author__/${AUTHOR}/g" "${file}"
   sed -i "s/__author_email__/${AUTHOR_EMAIL}/g" "${file}"
   sed -i "s/__authoring_date__/${AUTHORING_DATE}/g" "${file}"

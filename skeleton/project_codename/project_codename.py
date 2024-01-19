@@ -13,7 +13,7 @@ import click
 import click_config_file
 
 
-class __project_codename__:
+class __project_codename_camel__:
 
     def __init__(self, **kwargs):
         self.config = kwargs
