@@ -50,7 +50,7 @@ do
       ;;
     "--project-codename"|"-p")
       shift
-      PROJECT_CODENAME="${1}"
+      PROJECT_CODENAME="${1//-/_}"
       shift
       ;;
     "--version"|"-v")
