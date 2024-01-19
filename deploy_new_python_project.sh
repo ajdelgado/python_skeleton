@@ -51,7 +51,7 @@ do
     "--project-codename"|"-p")
       shift
       PROJECT_CODENAME="${1//-/_}"
-      PROJECT_CODENAME_CAMEL=$(echo "${PROJECT_CODENAME}" | sed -E 's/_([a-z])/\U\1/g')
+      PROJECT_CODENAME_CAMEL=$(echo "${PROJECT_CODENAME}" | sed -E 's/_([a-z])/\U\1/g' | sed -E 's/^([a-z])/\U\1/' )
       shift
       ;;
     "--version"|"-v")
