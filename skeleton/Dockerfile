@@ -8,4 +8,4 @@ COPY . .
 RUN pip install .
 VOLUME config
 
-CMD [ "python", "/usr/local/bin/discover_mastodon_servers.py", "--config", "/config/config.conf" ]
+CMD [ "python", "/usr/local/bin/__project_codename__.py", "--config", "/config/config.conf" ]

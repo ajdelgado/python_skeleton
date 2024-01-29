@@ -1,2 +1,2 @@
 #!/bin/sh
-podman build -t discovery-mastodon-servers .
+podman build -t __project_codename__ .

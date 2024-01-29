@@ -1,0 +1,3 @@
+debug_level='DEBUG'
+log_file='/config/__project_codename__.log'
+# list_of_parameters=['foo', 'bar']
