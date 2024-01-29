@@ -21,6 +21,7 @@ function usage() {
   fi
   echo ""
 }
+AUTHOR_EMAIL="${USER}@$(hostname -f)"
 # shellcheck disable=SC1090
 if [ -e "$(dirname "${0}")/defaults" ]
 then
