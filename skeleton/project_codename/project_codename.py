@@ -87,7 +87,7 @@ class __project_codename_camel__:
 # help="Don't do anything, just show what would be done.")
 @click_config_file.configuration_option()
 def __main__(**kwargs):
-    return __project_codename__(**kwargs)
+    return __project_codename_camel__(**kwargs)
 
 
 if __name__ == "__main__":
