@@ -134,7 +134,8 @@ do
   sed -i "s/__authoring_date__/${AUTHORING_DATE}/g" "${file}"
   sed -i "s/__project_name__/${PROJECT_NAME}/g" "${file}"
   sed -i "s/__version__/${VERSION}/g" "${file}"
-  sed -i "s/__url__/${URL}/g" "${file}"
+  escape_url=$(echo "${URL}" | sed 's_/_\\/_g')
+  sed -i "s/__url__/${escape_url}/g" "${file}"
   sed -i "s/__license__/${LICENSE}/g" "${file}"
   sed -i "s/__description__/${DESCRIPTION}/g" "${file}"
 done <<< "$(find "${destination_path}/" -type f)"
