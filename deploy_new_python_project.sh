@@ -125,6 +125,7 @@ if [ -n "${licence_url}" ]; then
 fi
 mv "${destination_path}/project_codename" "${destination_path}/${PROJECT_CODENAME}"
 mv "${destination_path}/${PROJECT_CODENAME}/project_codename.py" "${destination_path}/${PROJECT_CODENAME}/${PROJECT_CODENAME}.py"
+mv "${destination_path}/${PROJECT_CODENAME}/project_codename.sh" "${destination_path}/${PROJECT_CODENAME}/${PROJECT_CODENAME}.sh"
 while read -r file
 do
   sed -i "s/__project_codename__/${PROJECT_CODENAME}/g" "${file}"
