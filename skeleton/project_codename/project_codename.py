@@ -89,6 +89,5 @@ class __project_codename_camel__:
 def __main__(**kwargs):
     return __project_codename_camel__(**kwargs)
 
-
 if __name__ == "__main__":
     __main__()
