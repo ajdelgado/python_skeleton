@@ -7,13 +7,15 @@
 ### Linux
 
   ```bash
-sudo python3 setup.py install
+pip install .
 ```
 
 ### Windows (from PowerShell)
 
+Ensure you have "C:\Users\${env:USERNAME}\AppData\Roaming\Python\Python${python_version}\Scripts\" in your Path environment variable.
+
   ```powershell
-& $(where.exe python).split()[0] setup.py install
+& $(where.exe pip).split()[0] install .
 ```
 
 ## Usage
