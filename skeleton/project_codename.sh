@@ -1,9 +1,10 @@
 #!/bin/bash
-if [ ! -d "$(dirname "${0}")/.venv" ]; then
-    python -m venv "$(dirname "${0}")/.venv"
+script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+if [ ! -d "${script_dir}/.venv" ]; then
+    python -m venv "$script_dir/.venv"
 fi
 # shellcheck disable=1091
-source "$(dirname "${0}")/.venv/bin/activate"
-pip install -r "$(dirname "${0}")/requirements.txt" > /dev/null
-pip install "$(dirname "${0}")/" > /dev/null
-__project_codename__.py "${@}"
+source "$script_dir/.venv/bin/activate"
+pip install -r "$script_dir/requirements.txt" > /dev/null
+pip install "$script_dir/" > /dev/null
+nc_password_client.py "${@}"
