@@ -1,0 +1,14 @@
+#!/bin/bash
+CONFIG_FILE="${HOME}/.config/__project_codename__.conf"
+cd "__src_folder__" || exit 1
+if [ -r "${CONFIG_FILE}" ]; then
+    perms=$(stat -c %A "${CONFIG_FILE}")
+    if [ "${perms:4:6}" != '------' ]; then
+        echo "Permissions too open for config file '${CONFIG_FILE}' ($perms). Remove all permissions to group and others."
+        exit 1
+    fi
+    config=(--config "${CONFIG_FILE}")
+else
+    config=()
+fi
+"__src_folder__/__project_codename__.sh" "${config[@]}" "${@}"
