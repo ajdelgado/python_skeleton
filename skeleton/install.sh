@@ -19,7 +19,7 @@ do
   esac
 done
 
-if [ ! -x "${HOME}/.config/__project_codename__.conf" ]; then
+if [ ! -e "${HOME}/.config/__project_codename__.conf" ]; then
     touch "${HOME}/.config/__project_codename__.conf"
 fi
 chmod go-rwx "${HOME}/.config/__project_codename__.conf"
