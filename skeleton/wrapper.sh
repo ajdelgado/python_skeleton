@@ -1,4 +1,12 @@
 #!/bin/bash
+if [ -z "${HOME}" ]; then
+    if [ "$(whoami)" == "root" ]; then
+        HOME="/root"
+    else
+        HOME=$(grep "$(whoami)" /etc/passwd | awk 'BEGIN {FS=":"} {print($6)}')
+    fi
+fi
+
 CONFIG_FILE="${HOME}/.config/__project_codename__.conf"
 cd "__src_folder__" || exit 1
 if [ -r "${CONFIG_FILE}" ]; then
