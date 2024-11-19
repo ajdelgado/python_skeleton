@@ -7,4 +7,4 @@ fi
 source "$script_dir/.venv/bin/activate"
 pip install -r "$script_dir/requirements.txt" > /dev/null
 pip install "$script_dir/" > /dev/null
-nc_password_client.py "${@}"
+__project_codename__.py "${@}"
