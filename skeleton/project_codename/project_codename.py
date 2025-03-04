@@ -130,6 +130,12 @@ class __project_codename_camel__:
     help="File to store all debug messages."
 )
 @click.option(
+    '--cache-file',
+    '-f',
+    default=f"{CACHE_FOLDER}/__project_code_name__.json",
+    help='Cache file to store data from each run',
+)
+@click.option(
     '--max-cache-age',
     '-a',
     default=60*60*24*7,
