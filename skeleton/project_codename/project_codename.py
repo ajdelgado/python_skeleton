@@ -71,6 +71,10 @@ class __project_codename_camel__:
         data['last_update'] = time.time()
         with open(self.config['cache_file'], 'w', encoding='utf-8') as cache_file:
             json.dump(data, cache_file, indent=2)
+        self._log.debug(
+            "Saved cached data in '%s'",
+            self.config['cache_file']
+        )
 
     def _init_log(self):
         ''' Initialize log object '''
