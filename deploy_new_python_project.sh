@@ -16,6 +16,10 @@ function usage() {
   echo " --description       Description."
   echo " --forgejo-instance  URL to your Forgejo instance to create a repository. If present, will try to create a private repository."
   echo " --forgeto-token     API token to authenticate to your Forgejo instance."
+  echo ""
+  echo " If there is a file in '${HOME}/.config/deploy_new_python_project.conf' it will be loaded (sourced) and if the"
+  echo "parameters are exported (capitalize with underscore) they will be take from the configuration file and command "
+  echo "line parameters will overwrite them."
   if [ -e "$(dirname "${0}")/defaults" ]
   then
     echo "Defaults:"
@@ -26,6 +30,16 @@ function usage() {
 AUTHOR_EMAIL="${USER}@$(hostname -f)"
 FORGEJO_INSTANCE=''
 FORGEJO_TOKEN=''
+if [ -r "${HOME}/.config/deploy_new_python_project.conf" ]; then
+  perms=$(stat -c %a "${HOME}/.config/deploy_new_python_project.conf")
+  if [ "${perms:1:2}" != "00" ]; then
+    echo "Error! Permissions to open for configuration file '${HOME}/.config/deploy_new_python_project.conf'"
+    exit 2
+  fi
+  # shellcheck disable=SC1091
+  source "${HOME}/.config/deploy_new_python_project.conf"
+fi
+
 if [ -e "$(dirname "${0}")/defaults" ]
 then
   # shellcheck disable=SC1091
@@ -134,12 +148,27 @@ if [ -z "${LICENSE_URL}" ]; then
       ;;
   esac
 fi
-if [ -n "${licence_url}" ]; then
+if [ -n "${LICENSE_URL}" ]; then
   curl -s "${LICENSE_URL}" > "${destination_path}/LICENSE"
 fi
 mv "${destination_path}/project_codename" "${destination_path}/${PROJECT_CODENAME}"
 mv "${destination_path}/${PROJECT_CODENAME}/project_codename.py" "${destination_path}/${PROJECT_CODENAME}/${PROJECT_CODENAME}.py"
 mv "${destination_path}/project_codename.sh" "${destination_path}/${PROJECT_CODENAME}.sh"
+
+if [ -n "${FORGEJO_INSTANCE}" ]; then
+  data="{ \"default_branch\": \"main\", \"description\": \"${DESCRIPTION}\", \"name\": \"${PROJECT_CODENAME}\", \"private\": true}"
+  repo_response=$(curl -s "${FORGEJO_INSTANCE}/api/v1/user/repos" \
+    -H "Authorization: Bearer ${FORGEJO_TOKEN}" \
+    -H 'accept: application/json' \
+    -H 'Content-Type: application/json' \
+    -X POST \
+    -d "${data}")
+    git_url=$(echo "${repo_response}" | jq '.ssh_url')
+    if [ -z "${URL}" ]; then
+      URL=$(echo "${repo_response}" | jq '.html_url')
+    fi
+fi
+
 while read -r file
 do
   sed -i "s/__project_codename__/${PROJECT_CODENAME}/g" "${file}"
@@ -157,14 +186,6 @@ do
 done <<< "$(find "${destination_path}/" -type f)"
 
 if [ -n "${FORGEJO_INSTANCE}" ]; then
-  data="{ \"default_branch\": \"main\", \"description\": \"${DESCRIPTION}\", \"name\": \"${PROJECT_CODENAME}\", \"private\": true}"
-  response=$(curl -s "${FORGEJO_INSTANCE}/api/v1/user/repos" \
-    -H "Authorization: Bearer ${FORGEJO_TOKEN}" \
-    -H 'accept: application/json' \
-    -H 'Content-Type: application/json' \
-    -X POST \
-    -d "${data}")
-    git_url=$(echo "${response}" | jq '.ssh_url')
     cd "${destination_path}" || exit 1
     git init
     git checkout -b main
