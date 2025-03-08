@@ -26,9 +26,9 @@ function usage() {
 AUTHOR_EMAIL="${USER}@$(hostname -f)"
 FORGEJO_INSTANCE=''
 FORGEJO_TOKEN=''
-# shellcheck disable=SC1090
 if [ -e "$(dirname "${0}")/defaults" ]
 then
+  # shellcheck disable=SC1091
   source "$(dirname "${0}")/defaults"
 fi
 while [ $# -gt 0 ]
@@ -119,7 +119,7 @@ mkdir -p "${DEPLOYMENT_PATH}"
 script_path=$(dirname "${0}")
 cp "${script_path}/skeleton" "${destination_path}" -rfp
 if [ -z "${LICENSE_URL}" ]; then
-  case "${license}" in
+  case "${LICENSE}" in
     "GPLv3")
       LICENSE_URL="https://www.gnu.org/licenses/gpl-3.0.txt"
       ;;
@@ -127,7 +127,7 @@ if [ -z "${LICENSE_URL}" ]; then
       LICENSE_URL="https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt"
       ;;
     "GPLv1"|"GPL")
-      licence_url="https://www.gnu.org/licenses/old-licenses/gpl-1.0.txt"
+      LICENSE_URL="https://www.gnu.org/licenses/old-licenses/gpl-1.0.txt"
       ;;
     *)
       echo "Warning! Put the license text in the file ${destination_path}/LICENSE or pass the URL with the --license-url option"
