@@ -1,6 +1,6 @@
 AUTHOR="Foo Bar"
 AUTHOR_EMAIL="${USER}@$(hostname -f)"
-VERSION='0.1'
+VERSION='0.0.1'
 DEPLOYMENT_PATH="${HOME}/src"
 LICENSE='GPLv3'
 LICENSE_URL='https://www.gnu.org/licenses/gpl-3.0.txt'

@@ -30,6 +30,7 @@ function usage() {
 AUTHOR_EMAIL="${USER}@$(hostname -f)"
 FORGEJO_INSTANCE=''
 FORGEJO_TOKEN=''
+
 if [ -r "${HOME}/.config/deploy_new_python_project.conf" ]; then
   perms=$(stat -c %a "${HOME}/.config/deploy_new_python_project.conf")
   if [ "${perms:1:2}" != "00" ]; then
@@ -40,11 +41,6 @@ if [ -r "${HOME}/.config/deploy_new_python_project.conf" ]; then
   source "${HOME}/.config/deploy_new_python_project.conf"
 fi
 
-if [ -e "$(dirname "${0}")/defaults" ]
-then
-  # shellcheck disable=SC1091
-  source "$(dirname "${0}")/defaults"
-fi
 while [ $# -gt 0 ]
 do
   case "$1" in
@@ -156,6 +152,20 @@ mv "${destination_path}/${PROJECT_CODENAME}/project_codename.py" "${destination_
 mv "${destination_path}/project_codename.sh" "${destination_path}/${PROJECT_CODENAME}.sh"
 
 if [ -n "${FORGEJO_INSTANCE}" ]; then
+  forgejo_username=$(curl -s "${FORGEJO_INSTANCE}/api/v1/user" \
+    -H "Authorization: Bearer ${FORGEJO_TOKEN}" \
+    -H 'accept: application/json' \
+    -H 'Content-Type: application/json' \
+    -X GET | jq '.username' | sed 's/"//g')
+  repo_url=$(curl -s "${FORGEJO_INSTANCE}/api/v1/repos/${forgejo_username}/${PROJECT_CODENAME}" \
+    -H "Authorization: Bearer ${FORGEJO_TOKEN}" \
+    -H 'accept: application/json' \
+    -H 'Content-Type: application/json' \
+    -X GET | jq '.html_url' | sed 's/"//g')
+  if [ "${repo_url}" != "null" ]; then
+    echo "Error! There is a repo with URL '${repo_url}' with the same project code name"
+    exit 3
+  fi
   data="{ \"default_branch\": \"main\", \"description\": \"${DESCRIPTION}\", \"name\": \"${PROJECT_CODENAME}\", \"private\": true}"
   repo_response=$(curl -s "${FORGEJO_INSTANCE}/api/v1/user/repos" \
     -H "Authorization: Bearer ${FORGEJO_TOKEN}" \
@@ -163,9 +173,9 @@ if [ -n "${FORGEJO_INSTANCE}" ]; then
     -H 'Content-Type: application/json' \
     -X POST \
     -d "${data}")
-    git_url=$(echo "${repo_response}" | jq '.ssh_url')
+    git_url=$(echo "${repo_response}" | jq '.ssh_url' | sed 's/"//g')
     if [ -z "${URL}" ]; then
-      URL=$(echo "${repo_response}" | jq '.html_url')
+      URL=$(echo "${repo_response}" | jq '.html_url'| sed 's/"//g')
     fi
 fi
 
