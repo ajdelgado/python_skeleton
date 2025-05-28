@@ -1,7 +1,7 @@
 #!/bin/bash
 script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 if [ ! -d "${script_dir}/.venv" ]; then
-    python -m venv "$script_dir/.venv"
+    python3 -m venv "$script_dir/.venv"
 fi
 # shellcheck disable=1091
 source "$script_dir/.venv/bin/activate"
