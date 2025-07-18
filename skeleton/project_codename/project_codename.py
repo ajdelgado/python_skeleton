@@ -13,6 +13,7 @@ import logging
 from logging.handlers import SysLogHandler
 import click
 import click_config_file
+import yaml
 
 
 HOME_FOLDER = os.environ.get('HOME', os.environ.get('USERPROFILE', '/'))
@@ -71,10 +72,35 @@ class __project_codename_camel__:
         data['last_update'] = time.time()
         with open(self.config['cache_file'], 'w', encoding='utf-8') as cache_file:
             json.dump(data, cache_file, indent=2)
-        self._log.debug(
-            "Saved cached data in '%s'",
-            self.config['cache_file']
+        self._debug(
+            f"Saved cached data in '{self.config['cache_file']}'",
         )
+
+    def _output(self, message):
+        if self.config['output_format'] == 'JSON':
+            return json.dumps(message, indent=2)
+        elif self.config['output_format'] == 'YAML':
+            return yaml.dump(message, Dumper=yaml.Dumper)
+        elif self.config['output_format'] == 'PLAIN':
+            return message
+        else:
+            self._log.warning(
+                "Output format '%s' not supported",
+                self.config['output_format']
+            )
+            return message
+
+    def _info(self, message):
+        return self._log.info(self._output(message))
+
+    def _warning(self, message):
+        return self._log.warning(self._output(message))
+
+    def _error(self, message):
+        return self._log.error(self._output(message))
+
+    def _debug(self, message):
+        return self._log.debug(self._output(message))
 
     def _init_log(self):
         ''' Initialize log object '''
@@ -126,6 +152,16 @@ class __project_codename_camel__:
         case_sensitive=False,
     ),
     help='Set the debug level for the standard output.'
+)
+@click.option(
+    "--output-format",
+    "-o",
+    default="JSON",
+    type=click.Choice(
+        ["JSON", "YAML", "CSV", "PLAIN"],
+        case_sensitive=False,
+    ),
+    help='Set the output format.'
 )
 @click.option(
     '--log-file',
