@@ -82,7 +82,7 @@ class __project_codename_camel__:
         elif self.config['output_format'] == 'YAML':
             return yaml.dump(message, Dumper=yaml.Dumper)
         elif self.config['output_format'] == 'PLAIN':
-            return message
+            return f"{message}"
         else:
             self._log.warning(
                 "Output format '%s' not supported",
