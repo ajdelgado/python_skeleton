@@ -76,35 +76,48 @@ class __project_codename_camel__:
             f"Saved cached data in '{self.config['cache_file']}'",
         )
 
-    def _output(self, message):
+    def _output(self, message, severity):
+        if self.config['output_format'] == 'PLAIN':
+            return f"{time.time()} {message}"
+        if isinstance(message, str):
+            message = { "message": message }
+        if 'timestamp' not in message:
+            message["timestamp"] = time.time()
+        message['severity'] = severity
+        message['log_name'] = self._log.name
+        message['output_format'] = self.config['output_format']
+
         if self.config['output_format'] == 'JSON':
-            return json.dumps(message, indent=2)
-        elif self.config['output_format'] == 'YAML':
+            return json.dumps(message)
+        if self.config['output_format'] == 'YAML':
             return yaml.dump(message, Dumper=yaml.Dumper)
-        elif self.config['output_format'] == 'PLAIN':
-            return f"{message}"
-        else:
-            self._log.warning(
-                "Output format '%s' not supported",
-                self.config['output_format']
-            )
-            return message
+
+        self._warning(
+            { "message": f"Output format '{self.config['output_format']}' not supported"}
+        )
+        return message
 
     def _info(self, message):
-        return self._log.info(self._output(message))
+        '''Output information message'''
+        return self._log.info(self._output(message, 'info'))
 
     def _warning(self, message):
-        return self._log.warning(self._output(message))
+        '''Output warning message'''
+        self._code = max(self._code, 1)
+        return self._log.warning(self._output(message, 'warning'))
 
     def _error(self, message):
-        return self._log.error(self._output(message))
+        '''Output error message'''
+        self._code = 2
+        return self._log.error(self._output(message, 'error'))
 
     def _debug(self, message):
-        return self._log.debug(self._output(message))
+        '''Output debugging message'''
+        return self._log.debug(self._output(message, 'debug'))
 
     def _init_log(self):
         ''' Initialize log object '''
-        self._log = logging.getLogger("__project_codename__")
+        self._log = logging.getLogger("podman_updater")
         self._log.setLevel(logging.DEBUG)
 
         sysloghandler = SysLogHandler()
@@ -112,6 +125,11 @@ class __project_codename_camel__:
         self._log.addHandler(sysloghandler)
 
         streamhandler = logging.StreamHandler(sys.stdout)
+        if self.config['output_format'] == 'PLAIN':
+            stream_formatter = logging.Formatter(
+                '%(name)s %(levelname)s %(message)s'
+            )
+            streamhandler.setFormatter(stream_formatter)
         streamhandler.setLevel(
             logging.getLevelName(self.config.get("debug_level", 'INFO'))
         )
@@ -124,7 +142,7 @@ class __project_codename_camel__:
                 'HOME', os.environ.get('USERPROFILE', '')
             )
             log_folder = os.path.join(home_folder, "log")
-            log_file = os.path.join(log_folder, "__project_codename__.log")
+            log_file = os.path.join(log_folder, "podman_updater.log")
 
         if not os.path.exists(os.path.dirname(log_file)):
             os.mkdir(os.path.dirname(log_file))
@@ -132,11 +150,11 @@ class __project_codename_camel__:
         filehandler = logging.handlers.RotatingFileHandler(
             log_file, maxBytes=102400000
         )
-        # create formatter
-        formatter = logging.Formatter(
-            '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
-        )
-        filehandler.setFormatter(formatter)
+        if self.config['output_format'] == 'PLAIN':
+            plain_file_formatter = logging.Formatter(
+                '%(asctime)s %(name)s %(levelname)s %(message)s'
+            )
+            filehandler.setFormatter(plain_file_formatter)
         filehandler.setLevel(logging.DEBUG)
         self._log.addHandler(filehandler)
         return True
