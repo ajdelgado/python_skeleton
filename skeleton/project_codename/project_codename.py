@@ -83,12 +83,13 @@ class __project_codename_camel__:
             message = { "message": message }
         if 'timestamp' not in message:
             message["timestamp"] = time.time()
-        message['severity'] = severity
+        message['severity'] = severity.upper()
         message['log_name'] = self._log.name
-        message['output_format'] = self.config['output_format']
+        message['output_format'] = self.config['output_format'].upper()
+        message = dict(sorted(message.items(), reverse=True))
 
         if self.config['output_format'] == 'JSON':
-            return json.dumps(message)
+            return json.dumps(message, indent=2)
         if self.config['output_format'] == 'YAML':
             return yaml.dump(message, Dumper=yaml.Dumper)
 
