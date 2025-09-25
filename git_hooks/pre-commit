@@ -1,0 +1,132 @@
+#!/usr/bin/env bash
+# set -euo pipefail
+# Print a message
+#
+# Params:
+#   $1: colour (red | green | yellow)
+#   $*: status to print
+#
+# Example usage:
+#   print_msg green "Successfully built $something"
+#
+#   print_msg red "An error occurred:" $msg
+print_msg() {
+  color="1"
+  case "${1}" in
+    red)    color="31;1" ;;
+    green)  color="32;1" ;;
+    yellow) color="33;1" ;;
+  esac
+  shift
+  # shellcheck disable=SC1117
+  printf " \033[${color}m*\033[0;1m %s\033[0m\n" "${*}"
+}
+
+# Require an application to be in $PATH.
+#
+# Params:
+#   $1: app name
+#
+# Example usage:
+#   require_app ruby
+require_app() {
+  if ! command -v "${1}" > /dev/null; then
+    print_msg red "${1} not found, please install it"
+    return 1
+  fi
+}
+
+###############################################################################
+
+changed_shell_files=$(
+  git diff --cached --name-only --diff-filter=ACM |
+  xargs grep -lE '^#!/.*(sh|bash|ksh)'
+)
+
+changed_yaml_files=$(
+  git diff --cached --name-only --diff-filter=ACM |
+  xargs grep -lE '^#!/.*(yml|yaml)'
+)
+
+changed_json_files=$(
+  git diff --cached --name-only --diff-filter=ACM |
+  xargs grep -lE '^#!/.*json'
+)
+
+changed_yaml_files=$(
+  git diff --cached --name-only --diff-filter=ACM |
+  xargs grep -lE '^#!/.*(yml|eyaml|yaml)'
+)
+
+changed_python_files=$(
+  git diff --cached --name-only --diff-filter=ACM |
+  xargs grep -lE '^#!/.*(py)'
+)
+
+print_msg yellow "Running shell checks ${changed_shell_files}..."
+for file in ${changed_shell_files}
+do
+  require_app shellcheck || break
+  if shellcheck -x -a "${file}"; then
+    print_msg green "shellcheck approved your shell scripts, nice"
+  else
+    print_msg red "shellcheck disapproves of your changes (return code: $?), "\
+                  "fix the errors and come back later"
+    exit 1
+  fi
+done
+
+print_msg yellow "Running Ansible checks..."
+# shellcheck disable=SC2086
+for file in $changed_yaml_files
+do
+  require_app ansible-playbook || return
+  if ansible-playbook --check "${file}"; then
+    print_msg green "Ansible approved your YAML file '${file}', nice"
+  else
+    print_msg red "Ansible disapproves of your changes in '${file}' (return code: ${?}), "\
+                  "fix the errors and come back later"
+    exit 1
+  fi
+done
+
+print_msg yellow "Running JSON checks..."
+# shellcheck disable=SC2086
+for file in $changed_json_files
+do
+  require_app jq || return
+  if jq "${file}"; then
+    print_msg green "JQ approved your JSON file '${file}', nice"
+  else
+    print_msg red "JQ disapproves of your changes in '${file}' (return code: ${?}), "\
+                  "fix the errors and come back later"
+    exit 1
+  fi
+done
+
+print_msg yellow "Running YAML checks..."
+for file in $changed_yaml_files
+do
+  require_app yamllint || return
+  if jq "${file}"; then
+    print_msg green "Yamllint approved your YAML file '${file}', nice"
+  else
+    print_msg red "Yamllint disapproves of your changes in '${file}' (return code: ${?}), "\
+                  "fix the errors and come back later"
+    exit 1
+  fi
+done
+
+print_msg yellow "Running PyLint checks..."
+for file in $changed_python_files
+do
+  require_app pylint || return
+  if pylint -E --ignored-modules \* "${file}"; then
+    print_msg green "Pylint approved your Python file '${file}', nice"
+  else
+    print_msg red "Pylint disapproves of your changes in '${file}' (return code: ${?}), "\
+                  "fix the errors and come back later"
+    exit 1
+  fi
+done
+

@@ -198,6 +198,7 @@ done <<< "$(find "${destination_path}/" -type f)"
 if [ -n "${FORGEJO_INSTANCE}" ]; then
     cd "${destination_path}" || exit 1
     git init
+    cp "${script_path}/git_hooks/*" "${destination_path}/.git/hooks/" -rfp
     git checkout -b main
     git add .
     git commit -m "Initial commit"
