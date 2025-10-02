@@ -1,3 +1,4 @@
+setuptools
 click
 click-config-file
 PyYAML
