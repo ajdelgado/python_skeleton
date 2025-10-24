@@ -131,8 +131,12 @@ class __project_codename_camel__:
                 '%(name)s %(levelname)s %(message)s'
             )
             streamhandler.setFormatter(stream_formatter)
+        if 'SYSTEMD_EXEC_PID' in os.environ:
+            stream_level = 'DEBUG'
+        else:
+            stream_level = 'INFO'
         streamhandler.setLevel(
-            logging.getLevelName(self.config.get("debug_level", 'INFO'))
+            logging.getLevelName(self.config.get("debug_level", stream_level))
         )
         self._log.addHandler(streamhandler)
 
