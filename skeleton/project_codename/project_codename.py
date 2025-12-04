@@ -30,6 +30,7 @@ class __project_codename_camel__:
 
     def __init__(self, **kwargs):
         self.config = kwargs
+        self._code = 0
         if 'log_file' not in kwargs or kwargs['log_file'] is None:
             self.config['log_file'] = os.path.join(
                 os.environ.get(
