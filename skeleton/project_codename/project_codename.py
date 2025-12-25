@@ -16,10 +16,10 @@ import click_config_file
 import yaml
 
 
-HOME_FOLDER = os.environ.get('HOME', os.environ.get('USERPROFILE', '/'))
-if HOME_FOLDER == '/':
-    CACHE_FOLDER = '/var/cache'
-    LOG_FOLDER = '/var/log/'
+HOME_FOLDER = os.environ.get("HOME", os.environ.get("USERPROFILE", "/"))
+if HOME_FOLDER == "/":
+    CACHE_FOLDER = "/var/cache"
+    LOG_FOLDER = "/var/log/"
 else:
     CACHE_FOLDER = f"{HOME_FOLDER}/.local/"
     LOG_FOLDER = f"{HOME_FOLDER}/log/"
@@ -31,17 +31,11 @@ class __project_codename_camel__:
     def __init__(self, **kwargs):
         self.config = kwargs
         self._code = 0
-        if 'log_file' not in kwargs or kwargs['log_file'] is None:
-            self.config['log_file'] = os.path.join(
-                os.environ.get(
-                    'HOME',
-                    os.environ.get(
-                        'USERPROFILE',
-                        os.getcwd()
-                    )
-                ),
-                'log',
-                '__project_codename__.log'
+        if "log_file" not in kwargs or kwargs["log_file"] is None:
+            self.config["log_file"] = os.path.join(
+                os.environ.get("HOME", os.environ.get("USERPROFILE", os.getcwd())),
+                "log",
+                "__project_codename__.log",
             )
         self._init_log()
         self._default_data = {
@@ -50,17 +44,18 @@ class __project_codename_camel__:
         self.data = self._read_cached_data()
 
     def close(self):
-        '''Close class and save data'''
+        """Close class and save data"""
         self._save_cached_data(self.data)
 
     def _read_cached_data(self):
-        if os.path.exists(self.config['cache_file']):
-            with open(self.config['cache_file'], 'r', encoding='utf-8') as cache_file:
+        if os.path.exists(self.config["cache_file"]):
+            with open(self.config["cache_file"], "r", encoding="utf-8") as cache_file:
                 try:
                     cached_data = json.load(cache_file)
                     if (
-                        'last_update' in cached_data and
-                        cached_data['last_update'] + self.config['max_cache_age'] > time.time()
+                        "last_update" in cached_data
+                        and cached_data["last_update"] + self.config["max_cache_age"]
+                        > time.time()
                     ):
                         cached_data = self._default_data
                 except json.decoder.JSONDecodeError:
@@ -70,55 +65,55 @@ class __project_codename_camel__:
             return self._default_data
 
     def _save_cached_data(self, data):
-        data['last_update'] = time.time()
-        with open(self.config['cache_file'], 'w', encoding='utf-8') as cache_file:
+        data["last_update"] = time.time()
+        with open(self.config["cache_file"], "w", encoding="utf-8") as cache_file:
             json.dump(data, cache_file, indent=2)
         self._debug(
             f"Saved cached data in '{self.config['cache_file']}'",
         )
 
     def _output(self, message, severity):
-        if self.config['output_format'] == 'PLAIN':
+        if self.config["output_format"] == "PLAIN":
             return f"{time.time()} {message}"
         if isinstance(message, str):
-            message = { "message": message }
-        if 'timestamp' not in message:
+            message = {"message": message}
+        if "timestamp" not in message:
             message["timestamp"] = time.time()
-        message['severity'] = severity.upper()
-        message['log_name'] = self._log.name
-        message['output_format'] = self.config['output_format'].upper()
+        message["severity"] = severity.upper()
+        message["log_name"] = self._log.name
+        message["output_format"] = self.config["output_format"].upper()
         message = dict(sorted(message.items(), reverse=True))
 
-        if self.config['output_format'] == 'JSON':
+        if self.config["output_format"] == "JSON":
             return json.dumps(message, indent=2)
-        if self.config['output_format'] == 'YAML':
+        if self.config["output_format"] == "YAML":
             return yaml.dump(message, Dumper=yaml.Dumper)
 
         self._warning(
-            { "message": f"Output format '{self.config['output_format']}' not supported"}
+            {"message": f"Output format '{self.config['output_format']}' not supported"}
         )
         return message
 
     def _info(self, message):
-        '''Output information message'''
-        return self._log.info(self._output(message, 'info'))
+        """Output information message"""
+        return self._log.info(self._output(message, "info"))
 
     def _warning(self, message):
-        '''Output warning message'''
+        """Output warning message"""
         self._code = max(self._code, 1)
-        return self._log.warning(self._output(message, 'warning'))
+        return self._log.warning(self._output(message, "warning"))
 
     def _error(self, message):
-        '''Output error message'''
+        """Output error message"""
         self._code = 2
-        return self._log.error(self._output(message, 'error'))
+        return self._log.error(self._output(message, "error"))
 
     def _debug(self, message):
-        '''Output debugging message'''
-        return self._log.debug(self._output(message, 'debug'))
+        """Output debugging message"""
+        return self._log.debug(self._output(message, "debug"))
 
     def _init_log(self):
-        ''' Initialize log object '''
+        """Initialize log object"""
         self._log = logging.getLogger("__project_codename__")
         self._log.setLevel(logging.DEBUG)
 
@@ -127,38 +122,32 @@ class __project_codename_camel__:
         self._log.addHandler(sysloghandler)
 
         streamhandler = logging.StreamHandler(sys.stdout)
-        if self.config['output_format'] == 'PLAIN':
-            stream_formatter = logging.Formatter(
-                '%(name)s %(levelname)s %(message)s'
-            )
+        if self.config["output_format"] == "PLAIN":
+            stream_formatter = logging.Formatter("%(name)s %(levelname)s %(message)s")
             streamhandler.setFormatter(stream_formatter)
-        if 'SYSTEMD_EXEC_PID' in os.environ:
-            stream_level = 'DEBUG'
+        if "SYSTEMD_EXEC_PID" in os.environ:
+            stream_level = "DEBUG"
         else:
-            stream_level = 'INFO'
+            stream_level = "INFO"
         streamhandler.setLevel(
             logging.getLevelName(self.config.get("debug_level", stream_level))
         )
         self._log.addHandler(streamhandler)
 
-        if 'log_file' in self.config:
-            log_file = self.config['log_file']
+        if "log_file" in self.config:
+            log_file = self.config["log_file"]
         else:
-            home_folder = os.environ.get(
-                'HOME', os.environ.get('USERPROFILE', '')
-            )
+            home_folder = os.environ.get("HOME", os.environ.get("USERPROFILE", ""))
             log_folder = os.path.join(home_folder, "log")
             log_file = os.path.join(log_folder, "__project_codename__.log")
 
         if not os.path.exists(os.path.dirname(log_file)):
             os.mkdir(os.path.dirname(log_file))
 
-        filehandler = logging.handlers.RotatingFileHandler(
-            log_file, maxBytes=102400000
-        )
-        if self.config['output_format'] == 'PLAIN':
+        filehandler = logging.handlers.RotatingFileHandler(log_file, maxBytes=102400000)
+        if self.config["output_format"] == "PLAIN":
             plain_file_formatter = logging.Formatter(
-                '%(asctime)s %(name)s %(levelname)s %(message)s'
+                "%(asctime)s %(name)s %(levelname)s %(message)s"
             )
             filehandler.setFormatter(plain_file_formatter)
         filehandler.setLevel(logging.DEBUG)
@@ -175,7 +164,7 @@ class __project_codename_camel__:
         ["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG", "NOTSET"],
         case_sensitive=False,
     ),
-    help='Set the debug level for the standard output.'
+    help="Set the debug level for the standard output.",
 )
 @click.option(
     "--output-format",
@@ -185,25 +174,25 @@ class __project_codename_camel__:
         ["JSON", "YAML", "CSV", "PLAIN"],
         case_sensitive=False,
     ),
-    help='Set the output format.'
+    help="Set the output format.",
 )
 @click.option(
-    '--log-file',
-    '-l',
+    "--log-file",
+    "-l",
     default=f"{LOG_FOLDER}/__project_codename__.log",
-    help="File to store all debug messages."
+    help="File to store all debug messages.",
 )
 @click.option(
-    '--cache-file',
-    '-f',
+    "--cache-file",
+    "-f",
     default=f"{CACHE_FOLDER}/__project_codename__.json",
-    help='Cache file to store data from each run',
+    help="Cache file to store data from each run",
 )
 @click.option(
-    '--max-cache-age',
-    '-a',
-    default=60*60*24*7,
-    help='Max age in seconds for the cache'
+    "--max-cache-age",
+    "-a",
+    default=60 * 60 * 24 * 7,
+    help="Max age in seconds for the cache",
 )
 # @click.option("--dummy","-n", is_flag=True,
 # help="Don't do anything, just show what would be done.")
@@ -211,6 +200,7 @@ class __project_codename_camel__:
 def __main__(**kwargs):
     obj = __project_codename_camel__(**kwargs)
     obj.close()
+
 
 if __name__ == "__main__":
     __main__()

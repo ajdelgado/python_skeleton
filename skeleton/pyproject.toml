@@ -21,5 +21,6 @@ classifiers = [
 dependencies = [
     "click",
     "click_config_file",
+    "PyYAML",
 ]
 requires-python = ">=3"

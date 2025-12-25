@@ -6,13 +6,13 @@ import configparser
 import setuptools
 
 config = configparser.ConfigParser()
-config.read('setup.cfg')
+config.read("setup.cfg")
 
 setuptools.setup(
-    scripts=['__project_codename__/__project_codename__.py'],
+    scripts=["__project_codename__/__project_codename__.py"],
     author="__author__",
-    version=config['metadata']['version'],
-    name=config['metadata']['name'],
+    version=config["metadata"]["version"],
+    name=config["metadata"]["name"],
     author_email="__author_email__",
     url="__url__",
     description="__description__",
