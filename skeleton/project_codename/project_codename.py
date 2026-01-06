@@ -114,7 +114,7 @@ class __project_codename_camel__:
 
     def _init_log(self):
         """Initialize log object"""
-        self._log = logging.getLogger("__project_codename__")
+        self._log = logging.getLogger("mastodon_attachment_downloader")
         self._log.setLevel(logging.DEBUG)
 
         sysloghandler = SysLogHandler()
@@ -124,6 +124,8 @@ class __project_codename_camel__:
         streamhandler = logging.StreamHandler(sys.stdout)
         if self.config["output_format"] == "PLAIN":
             stream_formatter = logging.Formatter("%(name)s %(levelname)s %(message)s")
+            if 'SYSTEMD_EXEC_PID' in os.environ:
+                stream_formatter = logging.Formatter("%(levelname)s %(message)s")
             streamhandler.setFormatter(stream_formatter)
         if "SYSTEMD_EXEC_PID" in os.environ:
             stream_level = "DEBUG"
@@ -139,13 +141,13 @@ class __project_codename_camel__:
         else:
             home_folder = os.environ.get("HOME", os.environ.get("USERPROFILE", ""))
             log_folder = os.path.join(home_folder, "log")
-            log_file = os.path.join(log_folder, "__project_codename__.log")
+            log_file = os.path.join(log_folder, "mastodon_attachment_downloader.log")
 
         if not os.path.exists(os.path.dirname(log_file)):
             os.mkdir(os.path.dirname(log_file))
 
         filehandler = logging.handlers.RotatingFileHandler(log_file, maxBytes=102400000)
-        if self.config["output_format"] == "PLAIN":
+        if self.config["log_file_output_format"] == "PLAIN":
             plain_file_formatter = logging.Formatter(
                 "%(asctime)s %(name)s %(levelname)s %(message)s"
             )
@@ -181,6 +183,16 @@ class __project_codename_camel__:
     "-l",
     default=f"{LOG_FOLDER}/__project_codename__.log",
     help="File to store all debug messages.",
+)
+@click.option(
+    "--log-file-output-format",
+    "-O",
+    default="JSON",
+    type=click.Choice(
+        ["JSON", "YAML", "CSV", "PLAIN"],
+        case_sensitive=False,
+    ),
+    help="Set the log file output format.",
 )
 @click.option(
     "--cache-file",
