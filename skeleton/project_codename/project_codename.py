@@ -114,7 +114,7 @@ class __project_codename_camel__:
 
     def _init_log(self):
         """Initialize log object"""
-        self._log = logging.getLogger("mastodon_attachment_downloader")
+        self._log = logging.getLogger("__project_codename__")
         self._log.setLevel(logging.DEBUG)
 
         sysloghandler = SysLogHandler()
@@ -141,7 +141,7 @@ class __project_codename_camel__:
         else:
             home_folder = os.environ.get("HOME", os.environ.get("USERPROFILE", ""))
             log_folder = os.path.join(home_folder, "log")
-            log_file = os.path.join(log_folder, "mastodon_attachment_downloader.log")
+            log_file = os.path.join(log_folder, "__project_codename__.log")
 
         if not os.path.exists(os.path.dirname(log_file)):
             os.mkdir(os.path.dirname(log_file))
