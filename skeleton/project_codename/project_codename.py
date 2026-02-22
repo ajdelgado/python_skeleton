@@ -55,7 +55,7 @@ class __project_codename_camel__:
                     if (
                         "last_update" in cached_data
                         and cached_data["last_update"] + self.config["max_cache_age"]
-                        > time.time()
+                        < time.time()
                     ):
                         cached_data = self._default_data
                 except json.decoder.JSONDecodeError:
