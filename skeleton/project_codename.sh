@@ -11,4 +11,4 @@ if [ "${1}" == "--update" ] || [ ! -x "${script_dir}/.venv/bin/__project_codenam
     fi
     pip install "$script_dir/" > /dev/null
 fi
-__project_codename__.py "${@}"
+__project_codename__ "${@}"
