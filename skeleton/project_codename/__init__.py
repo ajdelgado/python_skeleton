@@ -208,8 +208,12 @@ class __project_codename_camel__:
     default=60 * 60 * 24 * 7,
     help="Max age in seconds for the cache",
 )
-# @click.option("--dummy","-n", is_flag=True,
-# help="Don't do anything, just show what would be done.")
+# @click.option(
+#     "--dummy",
+#     "-n",
+#     is_flag=True,
+#     help="Don't do anything, just show what would be done."
+# )
 @click_config_file.configuration_option()
 def __main__(**kwargs):
     obj = __project_codename_camel__(**kwargs)
