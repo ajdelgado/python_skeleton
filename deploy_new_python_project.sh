@@ -201,7 +201,7 @@ if [ -n "${FORGEJO_INSTANCE}" ]; then
     cp "${script_path}/git_hooks/*" "${destination_path}/.git/hooks/" -rfp
     git checkout -b main
     git add .
-    git commit -m "Initial commit"
+    git commit -m "Initial commit" --no-verify
     git remote add origin "${git_url}"
     git push -u origin main
 fi
