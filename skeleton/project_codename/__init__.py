@@ -40,16 +40,19 @@ class __project_codename_camel__:
                 "__project_codename__.log",
             )
         self._init_log()
-        self._default_data = {
+        self.data = self._read_cached_data(default_data={
             "last_update": 0,
-        }
-        self.data = self._read_cached_data()
+        })
 
     def close(self):
         """Close class and save data"""
         self._save_cached_data(self.data)
 
-    def _read_cached_data(self):
+    def _read_cached_data(self, default_data=None):
+        if not default_data:
+            default_data = {
+                "last_update": 0,
+            }
         if os.path.exists(self.config["cache_file"]):
             with open(self.config["cache_file"], "r", encoding="utf-8") as cache_file:
                 try:
@@ -59,12 +62,12 @@ class __project_codename_camel__:
                         and cached_data["last_update"] + self.config["max_cache_age"]
                         < time.time()
                     ):
-                        cached_data = self._default_data
+                        cached_data = default_data
                 except json.decoder.JSONDecodeError:
-                    cached_data = self._default_data
+                    cached_data = default_data
                 return cached_data
         else:
-            return self._default_data
+            return default_data
 
     def _save_cached_data(self, data):
         data["last_update"] = time.time()
