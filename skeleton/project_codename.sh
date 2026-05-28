@@ -12,4 +12,4 @@ if [ "${1}" == "--update" ] || [ ! -x "${script_dir}/.venv/bin/python3" ] || [ !
     fi
     pip install "$script_dir/" > /dev/null
 fi
-"${app}.py" "${@}"
+"${app}" "${@}"
