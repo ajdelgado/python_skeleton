@@ -186,7 +186,7 @@ class __project_codename_camel__:
 @click.option(
     "--log-file",
     "-l",
-    default=f"{LOG_FOLDER}/__project_codename__.log",
+    default=os.path.join(LOG_FOLDER, "/__project_codename__.log"),
     help="File to store all debug messages.",
 )
 @click.option(
@@ -202,7 +202,7 @@ class __project_codename_camel__:
 @click.option(
     "--cache-file",
     "-f",
-    default=f"{CACHE_FOLDER}/__project_codename__.json",
+    default=os.path.join(CACHE_FOLDER, "/__project_codename__.json"),
     help="Cache file to store data from each run",
 )
 @click.option(
