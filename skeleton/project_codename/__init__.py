@@ -144,9 +144,7 @@ class __project_codename_camel__:
         if "log_file" in self.config:
             log_file = self.config["log_file"]
         else:
-            home_folder = os.environ.get("HOME", os.environ.get("USERPROFILE", ""))
-            log_folder = os.path.join(home_folder, "log")
-            log_file = os.path.join(log_folder, "__project_codename__.log")
+            log_file = os.path.join(LOG_FOLDER, "__project_codename__.log")
 
         if not os.path.exists(os.path.dirname(log_file)):
             os.mkdir(os.path.dirname(log_file))
@@ -186,7 +184,7 @@ class __project_codename_camel__:
 @click.option(
     "--log-file",
     "-l",
-    default=os.path.join(LOG_FOLDER, "/__project_codename__.log"),
+    default=os.path.join(LOG_FOLDER, "__project_codename__.log"),
     help="File to store all debug messages.",
 )
 @click.option(
@@ -202,7 +200,7 @@ class __project_codename_camel__:
 @click.option(
     "--cache-file",
     "-f",
-    default=os.path.join(CACHE_FOLDER, "/__project_codename__.json"),
+    default=os.path.join(CACHE_FOLDER, "__project_codename__.json"),
     help="Cache file to store data from each run",
 )
 @click.option(
