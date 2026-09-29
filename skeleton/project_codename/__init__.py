@@ -48,7 +48,7 @@ class __project_codename_camel__:
         """Close class and save data"""
         self._save_cached_data(self.data)
 
-    def _read_cached_data(self, default_data=None):
+    def _read_cached_data(self, default_data: dict=None) -> dict:
         if not default_data:
             default_data = {
                 "last_update": 0,
@@ -69,7 +69,7 @@ class __project_codename_camel__:
         else:
             return default_data
 
-    def _save_cached_data(self, data):
+    def _save_cached_data(self, data: dict):
         data["last_update"] = time.time()
         with open(self.config["cache_file"], "w", encoding="utf-8") as cache_file:
             json.dump(data, cache_file, indent=2)
@@ -77,7 +77,7 @@ class __project_codename_camel__:
             f"Saved cached data in '{self.config['cache_file']}'",
         )
 
-    def _output(self, message, severity):
+    def _output(self, message: dict, severity: str) -> dict:
         if self.config["output_format"] == "PLAIN":
             return f"{time.time()} {message}"
         if isinstance(message, str):
@@ -99,25 +99,25 @@ class __project_codename_camel__:
         )
         return message
 
-    def _info(self, message):
+    def _info(self, message: dict):
         """Output information message"""
         return self._log.info(self._output(message, "info"))
 
-    def _warning(self, message):
+    def _warning(self, message: dict):
         """Output warning message"""
         self._code = max(self._code, 1)
         return self._log.warning(self._output(message, "warning"))
 
-    def _error(self, message):
+    def _error(self, message: dict):
         """Output error message"""
         self._code = 2
         return self._log.error(self._output(message, "error"))
 
-    def _debug(self, message):
+    def _debug(self, message: dict):
         """Output debugging message"""
         return self._log.debug(self._output(message, "debug"))
 
-    def _init_log(self):
+    def _init_log(self) -> bool:
         """Initialize log object"""
         self._log = logging.getLogger("__project_codename__")
         self._log.setLevel(logging.DEBUG)
