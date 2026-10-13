@@ -19,3 +19,4 @@ deploy_new_python_project [--help|-h|-?] [--author|-a 'Author name'] [--authorin
  --license           License name.
  --license-url       License URL to fetch in plain text and save in your project folder.
  --description       Description.
+Main (latest) code in https://repos.susurrando.com/adelgado/python_skeleton
